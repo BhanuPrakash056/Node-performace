@@ -1,4 +1,6 @@
+const cluster = require("cluster");
 const express = require("express");
+const os = require("os");
 const app = express();
 const port = 3000;
 function delays(duration) {
@@ -7,10 +9,27 @@ function delays(duration) {
     //event loop is blocked
   }
 }
-app.get("/", (req, res) => res.send("Performance test Example"));
+app.get("/", (req, res) => {
+  //JSON.stringify({});
+  //JSON.parse("{}");
+  //[5,1,2,3,4].sort
+
+  res.send("Performance test Example" + process.pid);
+});
 app.get("/timers", (req, res) => {
   //delay the response tim
   delays(9000);
-  res.send("ding ding ding test Example");
+  res.send("ding ding ding test Example" + process.pid);
 });
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+if (cluster.isMaster) {
+  console.log("master has been started");
+  const NumberOfCPU = os.cpus().length;
+  console.log(NumberOfCPU);
+  for (let i = 0; i < NumberOfCPU; i++) {
+    cluster.fork();
+  }
+} else {
+  console.log("worker has been started");
+  app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+}
