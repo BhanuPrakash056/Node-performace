@@ -26,7 +26,7 @@ if (cluster.isMaster) {
   console.log("master has been started");
   const NumberOfCPU = os.cpus().length;
   console.log(NumberOfCPU);
-  for (let i = 0; i < NumberOfCPU; i++) {
+  for (let i = 0; i < 1; i++) {
     cluster.fork();
   }
 } else {
