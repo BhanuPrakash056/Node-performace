@@ -1,6 +1,4 @@
-const cluster = require("cluster");
 const express = require("express");
-const os = require("os");
 const app = express();
 const port = 3000;
 function delays(duration) {
@@ -22,14 +20,4 @@ app.get("/timers", (req, res) => {
   res.send("ding ding ding test Example" + process.pid);
 });
 
-if (cluster.isMaster) {
-  console.log("master has been started");
-  const NumberOfCPU = os.cpus().length;
-  console.log(NumberOfCPU);
-  for (let i = 0; i < 1; i++) {
-    cluster.fork();
-  }
-} else {
-  console.log("worker has been started");
-  app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-}
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
